@@ -1,1 +1,0 @@
-﻿The small example application for **Twitter**.
