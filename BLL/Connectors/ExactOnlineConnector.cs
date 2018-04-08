@@ -388,7 +388,7 @@ namespace ExactAssignment.BLL
 
                                      if (client.For<DocumentAttachment>().Insert(ref attachment))
                                      {
-                                         return "strDocumentGUID";
+                                         return strDocumentGUID;
                                      }
                                      else
                                      {
