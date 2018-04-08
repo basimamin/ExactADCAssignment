@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "GetTree";
+}
+
+<h2>GetTree</h2>
+
+<script src="../../Scripts/jquery-1.4.4.min.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery.jstree.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery.cookie.js" type="text/javascript"></script>
+
+<div id="MainTree">
+
+</div>
+<script type= "text/javascript">
+     $(document).ready(function () {
+       Refresh();
+    });
+
+    function Refresh() {
+        $('#MainTree').jstree({
+            "json_data": {
+                "ajax": {
+                    "url": "/Home/GetTreeData",
+                    "type": "POST",
+                    "dataType": "json",
+                    "contentType": "application/json charset=utf-8"
+                 }
+            },
+            "themes": {
+                "theme": "default",
+                "dots": false,
+                "icons": true,
+                "url": "/content/themes/default/style.css"
+            },
+
+            "plugins": ["themes", "json_data", "dnd", "contextmenu", "ui", "crrm"]
+
+        });
+    }
+
+    $('#MainTree').bind("move_node.jstree", function (e, data) {
+        data.rslt.o.each(function (i) {
+            $.ajax({
+                async: false,
+                type: 'POST',
+                url: "/Home/MoveData",
+                data: {
+                    "path": $(this).attr("id"),
+                    "destination": data.rslt.np.attr("id")
+                },
+                success: function (r) {
+                   Refresh();
+                }
+            });
+        });
+    });
+
+    $('#MainTree').bind("create.jstree", function (e, data) {
+        $.post(
+				"/Home/CreateFolder",
+				{
+				    "path": data.rslt.parent.attr("id"),
+				    "newname": data.rslt.name
+				},
+				function (r) {
+				    Refresh();
+				}
+			);
+    });
+
+
+   
+</script>
+
+
+ 
+
